@@ -30,9 +30,11 @@ function App() {
 
   return (
     <>
-      <Header />
-      
       <div className="min-h-screen overflow-x-hidden relative bg-gradient-custom">
+        <div className="animate-fade-in">
+          <Header />
+        </div>
+
         <main className="relative">
           <div className="animate-fade-in">
             <Hero />
@@ -64,7 +66,9 @@ function App() {
         </section>
       </main>
 
+      <div className="animate-fade-in">
         <Footer />
+      </div>
 
       {showScrollTop && (
         <button
