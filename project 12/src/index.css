@@ -15,8 +15,6 @@
 
 @layer base {
   html {
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
     background-image: url('/Light Gradient 13.png');
     background-size: cover;
     background-position: top center;
@@ -30,9 +28,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400;
-    overscroll-behavior: none;
-    overscroll-behavior-y: none;
-    position: relative;
     min-height: 100vh;
   }
 
