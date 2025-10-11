@@ -137,7 +137,12 @@ export default function ReportForm() {
     const error = validateField('description', formData.description);
     if (!error) {
       setStep('choice');
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      setTimeout(() => {
+        const element = document.getElementById('prijavi-problem');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     } else {
       setTouched(prev => new Set(prev).add('description'));
       setErrors(prev => ({ ...prev, description: error }));
@@ -150,7 +155,12 @@ export default function ReportForm() {
     } else {
       setFormData(prev => ({ ...prev, anonymous: false }));
       setStep('details');
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      setTimeout(() => {
+        const element = document.getElementById('prijavi-problem');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   };
 
@@ -161,7 +171,12 @@ export default function ReportForm() {
     const success = await sendEmail();
     if (success) {
       setStep('submitted');
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      setTimeout(() => {
+        const element = document.getElementById('prijavi-problem');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   };
 
@@ -171,7 +186,12 @@ export default function ReportForm() {
       const success = await sendEmail();
       if (success) {
         setStep('submitted');
-        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+        setTimeout(() => {
+          const element = document.getElementById('prijavi-problem');
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
       }
     }
   };
@@ -194,7 +214,10 @@ export default function ReportForm() {
 
   useEffect(() => {
     if (step === 'submitted') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const element = document.getElementById('prijavi-problem');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }, [step]);
 
