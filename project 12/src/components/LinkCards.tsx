@@ -2,7 +2,7 @@ import { Heart, Users, Briefcase, HandHeart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function LinkCards() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   const links = [
     {

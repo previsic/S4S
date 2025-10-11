@@ -74,11 +74,13 @@ export default function ReportForm() {
   const handleBlur = (field: string) => {
     setTouched(prev => new Set(prev).add(field));
     const value = formData[field as keyof FormData];
-    const error = validateField(field, value);
-    setErrors(prev => ({
-      ...prev,
-      [field]: error,
-    }));
+    if (value !== null) {
+      const error = validateField(field, value);
+      setErrors(prev => ({
+        ...prev,
+        [field]: error,
+      }));
+    }
   };
 
   const handleDescriptionSubmit = (e: FormEvent) => {

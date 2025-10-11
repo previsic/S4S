@@ -14,11 +14,26 @@
 }
 
 @layer base {
+  html {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    background-image: url('/Light Gradient 13.png');
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100%;
+  }
+
   body {
     font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+    position: relative;
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -61,10 +76,8 @@
 }
 
 .bg-gradient-custom {
-  background-image: url('/Light Gradient 13.png');
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
+  background: transparent;
+  position: relative;
 }
 
 .glass-card {

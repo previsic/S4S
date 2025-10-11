@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Scan, HeadphonesIcon, HelpCircle, Settings, Mail, ArrowUp } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ReportForm from './components/ReportForm';
