@@ -36,6 +36,14 @@ export default function ReportForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
 
+  // Initialize EmailJS
+  useEffect(() => {
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+    }
+  }, []);
+
   const validateField = (name: string, value: string | boolean): string | undefined => {
     if (name === 'name' && formData.anonymous === false) {
       if (!value) return t.reportForm.detailsStep.errorNameRequired;
@@ -79,6 +87,11 @@ export default function ReportForm() {
       setIsSubmitting(true);
       setSubmitError(null);
 
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+      console.log('Sending email with:', { serviceId, templateId });
+
       const templateParams = {
         report_type: formData.anonymous 
           ? (language === 'hr' ? 'Anonimna prijava' : 'Anonymous Report')
@@ -89,13 +102,13 @@ export default function ReportForm() {
         sent_date: new Date().toLocaleString(language === 'hr' ? 'hr-HR' : 'en-US'),
       };
 
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        templateParams,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      const response = await emailjs.send(
+        serviceId,
+        templateId,
+        templateParams
       );
 
+      console.log('EmailJS Response:', response);
       return true;
     } catch (error) {
       console.error('EmailJS Error:', error);
