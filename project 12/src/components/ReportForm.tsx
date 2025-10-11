@@ -89,6 +89,13 @@ export default function ReportForm() {
 
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      console.log('Environment vars:', { serviceId, templateId, publicKey });
+      
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error('EmailJS environment variables not configured');
+      }
 
       console.log('Sending email with:', { serviceId, templateId });
 
