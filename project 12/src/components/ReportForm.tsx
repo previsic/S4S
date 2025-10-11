@@ -85,7 +85,7 @@ export default function ReportForm() {
       setSubmitError(null);
 
       const serviceId = 'service_pxlr01d';
-      const templateId = 'template_owvf0jc';
+      const templateId = 'template_9c6vzkn';
 
       console.log('Sending email with:', { serviceId, templateId });
 
