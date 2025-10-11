@@ -38,10 +38,7 @@ export default function ReportForm() {
 
   // Initialize EmailJS
   useEffect(() => {
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-    if (publicKey) {
-      emailjs.init(publicKey);
-    }
+    emailjs.init('L5-_E3Ji2IRaMdgX3');
   }, []);
 
   const validateField = (name: string, value: string | boolean): string | undefined => {
@@ -87,15 +84,8 @@ export default function ReportForm() {
       setIsSubmitting(true);
       setSubmitError(null);
 
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
-      console.log('Environment vars:', { serviceId, templateId, publicKey });
-      
-      if (!serviceId || !templateId || !publicKey) {
-        throw new Error('EmailJS environment variables not configured');
-      }
+      const serviceId = 'service_pxlr01d';
+      const templateId = 'template_owvf0jc';
 
       console.log('Sending email with:', { serviceId, templateId });
 
