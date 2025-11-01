@@ -2,7 +2,7 @@ export const translations = {
   hr: {
     nav: {
       reportProblem: 'Prijavi problem',
-      additionalHelp: 'Dodatna pomoć',
+      additionalHelp: '🚀 Testiranje - Dodatna pomoć!',
       aboutProject: 'O Projektu - TEST ✅'
     },
     hero: {
