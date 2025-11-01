@@ -7,6 +7,12 @@ const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'L5-_E3Ji2
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_pxlr01d';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_9c6vzkn';
 
+// DEBUG: Ispiši varijable u console
+console.log('EmailJS Config:');
+console.log('PUBLIC_KEY:', EMAILJS_PUBLIC_KEY);
+console.log('SERVICE_ID:', EMAILJS_SERVICE_ID);
+console.log('TEMPLATE_ID:', EMAILJS_TEMPLATE_ID);
+
 type Step = 'description' | 'choice' | 'details' | 'submitted';
 
 type FormData = {
