@@ -3,7 +3,7 @@ export const translations = {
     nav: {
       reportProblem: 'Prijavi problem',
       additionalHelp: 'Dodatna pomoć',
-      aboutProject: 'O projektu'
+      aboutProject: 'O Projektu - TEST ✅'
     },
     hero: {
       messages: [
