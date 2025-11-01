@@ -1,7 +1,11 @@
 import { useState, FormEvent, useEffect } from 'react';
-import { CheckCircle, ShieldAlert, Loader2 } from 'lucide-react';
+import { CheckCircle, ShieldAlert } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import emailjs from '@emailjs/browser';
+
+// EmailJS ključevi iz .env file-a
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'L5-_E3Ji2IRaMdgX3';
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_pxlr01d';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_9c6vzkn';
 
 type Step = 'description' | 'choice' | 'details' | 'submitted';
 
@@ -21,11 +25,9 @@ type FormErrors = {
 };
 
 export default function ReportForm() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [step, setStep] = useState<Step>('description');
   const [showWarning, setShowWarning] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     anonymous: null,
     name: '',
@@ -35,11 +37,6 @@ export default function ReportForm() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
-
-  // Initialize EmailJS
-  useEffect(() => {
-    emailjs.init('L5-_E3Ji2IRaMdgX3');
-  }, []);
 
   const validateField = (name: string, value: string | boolean): string | undefined => {
     if (name === 'name' && formData.anonymous === false) {
@@ -79,57 +76,14 @@ export default function ReportForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const sendEmail = async (): Promise<boolean> => {
-    try {
-      setIsSubmitting(true);
-      setSubmitError(null);
-
-      const serviceId = 'service_pxlr01d';
-      const templateId = 'template_9c6vzkn';
-
-      console.log('Sending email with:', { serviceId, templateId });
-
-      const templateParams = {
-        report_type: formData.anonymous 
-          ? (language === 'hr' ? 'Anonimna prijava' : 'Anonymous Report')
-          : (language === 'hr' ? 'Prijava s kontaktom' : 'Report with Contact'),
-        from_name: formData.anonymous ? (language === 'hr' ? 'Anonimno' : 'Anonymous') : formData.name,
-        reply_to: formData.anonymous ? 'noreply@scan4support.com' : formData.email,
-        message: formData.description,
-        sent_date: new Date().toLocaleString(language === 'hr' ? 'hr-HR' : 'en-US'),
-      };
-
-      const response = await emailjs.send(
-        serviceId,
-        templateId,
-        templateParams
-      );
-
-      console.log('EmailJS Response:', response);
-      return true;
-    } catch (error) {
-      console.error('EmailJS Error:', error);
-      setSubmitError(
-        language === 'hr' 
-          ? 'Greška pri slanju. Molimo pokušajte ponovno.' 
-          : 'Error sending. Please try again.'
-      );
-      return false;
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const handleBlur = (field: string) => {
     setTouched(prev => new Set(prev).add(field));
     const value = formData[field as keyof FormData];
-    if (value !== null) {
-      const error = validateField(field, value);
-      setErrors(prev => ({
-        ...prev,
-        [field]: error,
-      }));
-    }
+    const error = validateField(field, value as string | boolean);
+    setErrors(prev => ({
+      ...prev,
+      [field]: error,
+    }));
   };
 
   const handleDescriptionSubmit = (e: FormEvent) => {
@@ -137,12 +91,7 @@ export default function ReportForm() {
     const error = validateField('description', formData.description);
     if (!error) {
       setStep('choice');
-      setTimeout(() => {
-        const element = document.getElementById('prijavi-problem');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
     } else {
       setTouched(prev => new Set(prev).add('description'));
       setErrors(prev => ({ ...prev, description: error }));
@@ -155,44 +104,22 @@ export default function ReportForm() {
     } else {
       setFormData(prev => ({ ...prev, anonymous: false }));
       setStep('details');
-      setTimeout(() => {
-        const element = document.getElementById('prijavi-problem');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
     }
   };
 
-  const handleConfirmAnonymous = async () => {
+  const handleConfirmAnonymous = () => {
     setFormData(prev => ({ ...prev, anonymous: true }));
     setShowWarning(false);
-    
-    const success = await sendEmail();
-    if (success) {
-      setStep('submitted');
-      setTimeout(() => {
-        const element = document.getElementById('prijavi-problem');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
+    setStep('submitted');
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
   };
 
-  const handleDetailsSubmit = async (e: FormEvent) => {
+  const handleDetailsSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (validateDetails()) {
-      const success = await sendEmail();
-      if (success) {
-        setStep('submitted');
-        setTimeout(() => {
-          const element = document.getElementById('prijavi-problem');
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
-      }
+      setStep('submitted');
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
     }
   };
 
@@ -208,16 +135,11 @@ export default function ReportForm() {
     setTouched(new Set());
     setStep('description');
     setShowWarning(false);
-    setSubmitError(null);
-    setIsSubmitting(false);
   };
 
   useEffect(() => {
     if (step === 'submitted') {
-      const element = document.getElementById('prijavi-problem');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [step]);
 
@@ -367,28 +289,20 @@ export default function ReportForm() {
                 <p className="text-[var(--muted)] mb-5 sm:mb-6 text-[13px] sm:text-base leading-relaxed">
                   {t.reportForm.warningModal.message}
                 </p>
-                {submitError && (
-                  <div className="w-full mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-600 text-sm text-center">{submitError}</p>
-                  </div>
-                )}
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
                   <button
                     onClick={() => {
                       setShowWarning(false);
                       handleAnonymousChoice(false);
                     }}
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-3 bg-[var(--accent)] text-white rounded-full hover:opacity-90 transition-all font-semibold text-[14px] sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-3 bg-[var(--accent)] text-white rounded-full hover:opacity-90 transition-all font-semibold text-[14px] sm:text-base"
                   >
                     {t.reportForm.warningModal.provideDataButton}
                   </button>
                   <button
                     onClick={handleConfirmAnonymous}
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all font-semibold text-[14px] sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all font-semibold text-[14px] sm:text-base"
                   >
-                    {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
                     {t.reportForm.warningModal.stayAnonymousButton}
                   </button>
                 </div>
@@ -474,19 +388,12 @@ export default function ReportForm() {
               )}
             </div>
 
-            {submitError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 text-sm text-center">{submitError}</p>
-              </div>
-            )}
-
             <button
               type="submit"
-              disabled={!formData.name || !formData.email || !formData.consent || isSubmitting}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              disabled={!formData.name || !formData.email || !formData.consent}
+              className="btn-primary w-full"
             >
-              {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
-              {isSubmitting ? (language === 'hr' ? 'Šaljem...' : 'Sending...') : t.reportForm.detailsStep.submitButton}
+              {t.reportForm.detailsStep.submitButton}
             </button>
 
             <button
