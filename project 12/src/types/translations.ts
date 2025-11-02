@@ -2,8 +2,8 @@ export const translations = {
   hr: {
     nav: {
       reportProblem: 'Prijavi problem',
-      additionalHelp: '🚀 Testiranje - Dodatna pomoć!',
-      aboutProject: 'O Projektu - TEST ✅'
+      additionalHelp: 'Dodatna pomoć',
+      aboutProject: 'O Projektu'
     },
     hero: {
       messages: [

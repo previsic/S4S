@@ -1,17 +1,13 @@
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { CheckCircle, ShieldAlert } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import emailjs from '@emailjs/browser';
 
-// EmailJS ključevi iz .env file-a
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'L5-_E3Ji2IRaMdgX3';
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_pxlr01d';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_9c6vzkn';
 
-// DEBUG: Ispiši varijable u console
-console.log('EmailJS Config:');
-console.log('PUBLIC_KEY:', EMAILJS_PUBLIC_KEY);
-console.log('SERVICE_ID:', EMAILJS_SERVICE_ID);
-console.log('TEMPLATE_ID:', EMAILJS_TEMPLATE_ID);
+emailjs.init(EMAILJS_PUBLIC_KEY);
 
 type Step = 'description' | 'choice' | 'details' | 'submitted';
 
@@ -34,6 +30,7 @@ export default function ReportForm() {
   const { t } = useLanguage();
   const [step, setStep] = useState<Step>('description');
   const [showWarning, setShowWarning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     anonymous: null,
     name: '',
@@ -43,6 +40,21 @@ export default function ReportForm() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const scrollToForm = () => {
+    if (formRef.current) {
+      const headerOffset = 100;
+      const elementPosition = formRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const validateField = (name: string, value: string | boolean): string | undefined => {
     if (name === 'name' && formData.anonymous === false) {
@@ -97,7 +109,7 @@ export default function ReportForm() {
     const error = validateField('description', formData.description);
     if (!error) {
       setStep('choice');
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      setTimeout(() => scrollToForm(), 100);
     } else {
       setTouched(prev => new Set(prev).add('description'));
       setErrors(prev => ({ ...prev, description: error }));
@@ -110,22 +122,60 @@ export default function ReportForm() {
     } else {
       setFormData(prev => ({ ...prev, anonymous: false }));
       setStep('details');
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      setTimeout(() => scrollToForm(), 100);
     }
   };
 
-  const handleConfirmAnonymous = () => {
+  const handleConfirmAnonymous = async () => {
     setFormData(prev => ({ ...prev, anonymous: true }));
     setShowWarning(false);
-    setStep('submitted');
-    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: 'Anonimni korisnik',
+          from_email: 'anonymous@scan4support.sum.ba',
+          message: formData.description,
+          type: 'Anonimna prijava',
+        }
+      );
+
+      setStep('submitted');
+      setTimeout(() => scrollToForm(), 100);
+    } catch {
+      alert('Došlo je do greške pri slanju prijave. Molimo pokušajte ponovno.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleDetailsSubmit = (e: FormEvent) => {
+  const handleDetailsSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (validateDetails()) {
+    if (!validateDetails()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.description,
+          type: 'Prijava s kontaktom',
+        }
+      );
+
       setStep('submitted');
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      setTimeout(() => scrollToForm(), 100);
+    } catch {
+      alert('Došlo je do greške pri slanju prijave. Molimo pokušajte ponovno.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -144,14 +194,22 @@ export default function ReportForm() {
   };
 
   useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+  }, [formData.description]);
+
+  useEffect(() => {
     if (step === 'submitted') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToForm();
     }
   }, [step]);
 
   if (step === 'submitted') {
     return (
-      <div className="max-w-2xl mx-auto px-4">
+      <div ref={formRef} className="max-w-2xl mx-auto px-4">
         <div className="glass-card rounded-2xl p-5 sm:p-6 md:p-8 text-center animate-fade-in">
           <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[var(--accent)]/10 mb-4 sm:mb-6 animate-success-scale">
             <CheckCircle className="w-12 h-12 sm:w-14 sm:h-14 text-[var(--accent)] animate-check-draw" aria-hidden="true" />
@@ -177,7 +235,7 @@ export default function ReportForm() {
 
   if (step === 'description') {
     return (
-      <div className="max-w-2xl mx-auto px-4">
+      <div ref={formRef} className="max-w-2xl mx-auto px-4">
         <div className="glass-card rounded-2xl p-5 sm:p-6 md:p-8 animate-fade-in">
           <h2 className="text-[20px] sm:text-2xl md:text-3xl font-semibold text-[var(--ink)] mb-6 sm:mb-8 text-center leading-tight">
             {t.reportForm.title}
@@ -189,6 +247,7 @@ export default function ReportForm() {
                 {t.reportForm.descriptionStep.descriptionLabel}
               </label>
               <textarea
+                ref={textareaRef}
                 id="description"
                 rows={5}
                 minLength={20}
@@ -198,7 +257,8 @@ export default function ReportForm() {
                 aria-invalid={touched.has('description') && !!errors.description}
                 aria-describedby={errors.description ? 'description-error' : undefined}
                 placeholder={t.reportForm.descriptionStep.descriptionPlaceholder}
-                className="input-field resize-none text-[14px] sm:text-base"
+                className="input-field resize-none text-[14px] sm:text-base overflow-hidden"
+                style={{ minHeight: '120px' }}
                 autoFocus
               />
               <div className="flex justify-between items-start mt-1">
@@ -239,7 +299,7 @@ export default function ReportForm() {
 
   if (step === 'choice') {
     return (
-      <div className="max-w-2xl mx-auto px-4">
+      <div ref={formRef} className="max-w-2xl mx-auto px-4">
         <div className="glass-card rounded-2xl p-5 sm:p-6 md:p-8 animate-fade-in">
           <h2 className="text-[20px] sm:text-2xl md:text-3xl font-semibold text-[var(--ink)] mb-3 sm:mb-4 text-center leading-tight">
             {t.reportForm.choiceStep.title}
@@ -307,9 +367,10 @@ export default function ReportForm() {
                   </button>
                   <button
                     onClick={handleConfirmAnonymous}
-                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all font-semibold text-[14px] sm:text-base"
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all font-semibold text-[14px] sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {t.reportForm.warningModal.stayAnonymousButton}
+                    {isSubmitting ? 'Šaljem...' : t.reportForm.warningModal.stayAnonymousButton}
                   </button>
                 </div>
               </div>
@@ -322,7 +383,7 @@ export default function ReportForm() {
 
   if (step === 'details') {
     return (
-      <div className="max-w-2xl mx-auto px-4">
+      <div ref={formRef} className="max-w-2xl mx-auto px-4">
         <div className="glass-card rounded-2xl p-5 sm:p-6 md:p-8 animate-fade-in">
           <h2 className="text-[20px] sm:text-2xl md:text-3xl font-semibold text-[var(--ink)] mb-5 sm:mb-8 text-center leading-tight">
             {t.reportForm.detailsStep.title}
@@ -396,10 +457,10 @@ export default function ReportForm() {
 
             <button
               type="submit"
-              disabled={!formData.name || !formData.email || !formData.consent}
+              disabled={!formData.name || !formData.email || !formData.consent || isSubmitting}
               className="btn-primary w-full"
             >
-              {t.reportForm.detailsStep.submitButton}
+              {isSubmitting ? 'Šaljem...' : t.reportForm.detailsStep.submitButton}
             </button>
 
             <button
