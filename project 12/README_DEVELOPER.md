@@ -4,7 +4,7 @@
 
 **Projekt:** Scan4Support - Studentska platforma za podršku  
 **GitHub:** https://github.com/previsic/S4S  
-**Live Demo:** https://s4s-xxx.vercel.app  
+**Live Demo:** https://s4-s.vercel.app  
 **Developer:** Juraj Previšić (FSRE)  
 **Target Server:** sum.ba
 

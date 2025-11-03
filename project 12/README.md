@@ -6,7 +6,7 @@ Scan4Support je **React + TypeScript aplikacija** za primanje upita od studenata
 
 - **Autori:** Juraj Previšić (FSRE) i Ivan Galić (FPMOZ)
 - **Projekt:** EU Peace
-- **Trenutni URL:** https://cerulean-malasada-257e7f.netlify.app
+- **Trenutni URL:** https://s4-s.vercel.app
 
 ---
 

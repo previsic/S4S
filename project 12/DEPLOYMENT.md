@@ -255,7 +255,7 @@ Total:  ~61 kB   (gzipped)
 
 - **Developer:** Juraj Previšić (FSRE)
 - **GitHub:** https://github.com/previsic/S4S
-- **Live Demo:** https://scan4support.netlify.app
+- **Live Demo:** https://s4-s.vercel.app
 
 ---
 
