@@ -138,6 +138,7 @@ export default function ReportForm() {
         {
           from_name: 'Anonimni korisnik',
           from_email: 'anonymous@scan4support.sum.ba',
+          reply_to: 'scan4support@sum.ba',
           message: formData.description,
           type: 'Anonimna prijava',
         }
@@ -165,6 +166,7 @@ export default function ReportForm() {
         {
           from_name: formData.name,
           from_email: formData.email,
+          reply_to: formData.email,
           message: formData.description,
           type: 'Prijava s kontaktom',
         }
