@@ -29,8 +29,8 @@ Kreiraj `.env.local` file ili postavi environment varijable na serveru:
 
 ```bash
 VITE_EMAILJS_PUBLIC_KEY=L5-_E3Ji2IRaMdgX3
-VITE_EMAILJS_SERVICE_ID=service_pxlr01d
-VITE_EMAILJS_TEMPLATE_ID=template_9c6vzkn
+VITE_EMAILJS_SERVICE_ID=service_nfg20ut
+VITE_EMAILJS_TEMPLATE_ID=template_un44etj
 ```
 
 **Napomena:** Ove vrijednosti su već postavljene kao fallback u kodu, ali preporučeno je koristiti environment varijable.
@@ -104,17 +104,19 @@ server {
 Aplikacija koristi EmailJS za slanje email notifikacija.
 
 ### Trenutna Konfiguracija:
-- **Service:** service_pxlr01d
-- **Template:** template_9c6vzkn
+- **Service:** service_nfg20ut (Gmail: scan4support@sum.ba)
+- **Template:** template_un44etj
 - **Public Key:** L5-_E3Ji2IRaMdgX3
 
 ### Gdje idu mailovi?
 
 EmailJS je konfiguriran da šalje mailove na:
-**scan4support@sum.ba** (novi kreiran mail)
+**scan4support@sum.ba**
 
 ### Provjera:
-https://dashboard.emailjs.com/admin/services/service_pxlr01d
+- EmailJS Dashboard: https://dashboard.emailjs.com/admin
+- Service: https://dashboard.emailjs.com/admin/services/service_nfg20ut
+- Template: https://dashboard.emailjs.com/admin/templates/template_un44etj
 
 ---
 
