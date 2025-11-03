@@ -4,8 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 import emailjs from '@emailjs/browser';
 
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'L5-_E3Ji2IRaMdgX3';
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_pxlr01d';
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_9c6vzkn';
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_nfg20ut';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_un44etj';
 
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
