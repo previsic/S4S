@@ -193,7 +193,6 @@ Browser DevTools:
 
 - **Juraj Previšić** - Razvoj (FSRE)
 - **Ivan Galić** - Razvoj (FPMOZ)
-- **Marijan Tustonja** - Project Manager
 
 ---
 

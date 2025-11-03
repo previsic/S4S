@@ -254,7 +254,6 @@ Total:  ~61 kB   (gzipped)
 ## 👥 Kontakt
 
 - **Developer:** Juraj Previšić (FSRE)
-- **Project Manager:** Marijan Tustonja
 - **GitHub:** https://github.com/previsic/S4S
 - **Live Demo:** https://scan4support.netlify.app
 

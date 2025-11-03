@@ -119,4 +119,4 @@ scan4support.sum.ba/
 - Trebam li backend?
 - Koji je domain?
 
-**Kontakt:** Marijan Tustonja <marijan.tustonja@sum.ba>
+**Kontakt:** scan4support@sum.ba
